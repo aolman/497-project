@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+  html, body, #root { height: 100%; overflow: hidden; }
+  body {
+    @apply bg-surface-page text-ink antialiased;
+    font-family: "DM Sans", system-ui, sans-serif;
+  }
+  /* Money lines up in columns */
+  .tabular { font-variant-numeric: tabular-nums; }
+  :focus-visible { outline: 3px solid #0E5C58; outline-offset: 2px; border-radius: 10px; }
+  input[type="date"] { min-height: 48px; }
+}
+
+@layer components {
+  .card { @apply bg-white rounded-card border border-surface-line shadow-[0_1px_2px_rgba(15,23,42,0.04)]; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-2xl font-semibold min-h-[48px] px-5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed; }
+  .btn-primary { @apply btn bg-teal text-white hover:bg-teal-dark; }
+  .btn-soft { @apply btn bg-surface text-teal-dark hover:bg-[#E2E8F7]; }
+  .btn-ghost { @apply btn bg-transparent text-teal-dark hover:bg-surface; }
+  .chip { @apply inline-flex items-center gap-2 rounded-full border px-4 min-h-[44px] font-medium transition-colors; }
+  .chip-off { @apply chip bg-surface border-surface-line text-ink hover:border-teal-line; }
+  .chip-on { @apply chip bg-teal border-teal text-white; }
+  .field { @apply w-full rounded-2xl bg-surface border border-surface-line px-4 min-h-[48px] text-ink placeholder:text-ink-muted focus:border-teal focus:outline-none; }
+  .label { @apply block text-[15px] font-semibold text-ink mb-2; }
+  .muted { @apply text-ink-muted; }
+}

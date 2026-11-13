@@ -50,10 +50,29 @@ def connect() -> sqlite3.Connection:
     return conn
 
 
+# Columns added after the first version; added to older databases on start-up.
+MIGRATIONS = [
+    ("settings", "name", "TEXT NOT NULL DEFAULT ''"),
+    ("settings", "onboarded", "INTEGER NOT NULL DEFAULT 0"),
+]
+
+
 def init() -> None:
     with connect() as conn:
         conn.executescript(SCHEMA)
         conn.execute("INSERT OR IGNORE INTO settings (id) VALUES (1)")
+        for table, column, decl in MIGRATIONS:
+            have = {r["name"] for r in conn.execute(f"PRAGMA table_info({table})")}
+            if column not in have:
+                conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {decl}")
+
+
+def wipe(conn: sqlite3.Connection) -> None:
+    """Delete every row and return settings to defaults (keeps the file and schema)."""
+    for table in ("income_entries", "expenses", "bills", "income_sources"):
+        conn.execute(f"DELETE FROM {table}")
+    conn.execute("UPDATE settings SET tax_rate = 0.20, cushion_level = 'moderate', name = '', onboarded = 0 "
+                 "WHERE id = 1")
 
 
 def to_date(s: str) -> date:
